@@ -9,6 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../iron-validator-behavior/iron-validator-behavior.html">
+
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="register-login">
@@ -23,8 +28,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <h1>Log In</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax ei, ad pri animal labores suscipiantur.</p>
+        <iron-form id="form">
+          <form action="/user" method="get">
+            <paper-input label="email" required auto-validate>
+              <iron-icon icon="mail" slot="prefix"></iron-icon>
+              <div slot="suffix">@mail.com</div>
+              <iron-icon icon="mail" slot="suffix"></iron-icon>
+            </paper-input>
+            <custom-validator id="custom-validator" password="[[value]]"></custom-validator>
+            <paper-input label="password" value="{{value}}" required auto-validate minlength="8" error-message="It should be at least 8 characters long"></paper-input>
+            <paper-input label="confirm" required auto-validate validator="custom-validator" error-message="It should match the password above"></paper-input>
+            <paper-button raised onclick="form.submit()">Submit</paper-button>
+          </form>
+        </iron-form>
     </div>
   </template>
 
@@ -34,5 +50,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     window.customElements.define(MyView3.is, MyView3);
+
+    Polymer({
+
+        is: 'custom-validator',
+        properties: {
+    			password: String
+        },
+        behaviors: [
+        			Polymer.IronValidatorBehavior
+        		],
+        		validate: function(value) {
+        			return !value || value === this.password;
+        }
+
+    });
   </script>
 </dom-module>
